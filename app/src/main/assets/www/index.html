@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="mr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#163a35">
+<meta name="description" content="90-day body transformation, nutrition, water, posture, sleep and hair-care tracker.">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<title>90-Day Fit & Care Tracker</title>
+<style>
+:root{--bg:#f4f7f5;--card:#fff;--ink:#17312d;--muted:#657873;--green:#1f6b56;--lime:#d9f1a5;--line:#dce7e1;--orange:#e99b43;--red:#b74747}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,"Noto Sans Devanagari",sans-serif}
+header{background:linear-gradient(135deg,#163a35,#28715a);color:white;padding:22px 18px 18px;border-radius:0 0 24px 24px}
+header .top{display:flex;justify-content:space-between;align-items:center;gap:12px}h1{font-size:22px;margin:0}header p{color:#d6e9df;margin:7px 0 0;font-size:13px}
+button,select,input{font:inherit}button{cursor:pointer;border:0;border-radius:12px;padding:10px 13px;background:var(--green);color:white;font-weight:650}button.secondary{background:#eaf2ed;color:var(--ink);border:1px solid var(--line)}button.small{padding:7px 9px;font-size:13px}
+main{max-width:820px;margin:auto;padding:14px 13px 92px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:14px}.stat{background:#ffffff18;border:1px solid #ffffff25;border-radius:14px;padding:10px}.stat b{display:block;font-size:19px}.stat span{font-size:11px;color:#d6e9df}
+nav{position:sticky;top:0;z-index:4;display:flex;gap:7px;overflow:auto;background:var(--bg);padding:10px 0}.tab{white-space:nowrap;background:#e6eee9;color:var(--ink);border-radius:99px;padding:9px 13px;font-size:13px}.tab.active{background:var(--green);color:#fff}
+.panel{display:none}.panel.active{display:block}.card{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:15px;margin:10px 0;box-shadow:0 3px 12px #143e3010}.card h2{font-size:18px;margin:0 0 10px}.card h3{font-size:15px;margin:13px 0 7px}.muted{color:var(--muted);font-size:13px}.row{display:flex;align-items:center;justify-content:space-between;gap:10px}.row.wrap{flex-wrap:wrap}.pill{background:#eef5e8;color:#2e654b;border-radius:99px;padding:4px 9px;font-size:12px}.check{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #edf1ee}.check:last-child{border:0}.check input{width:20px;height:20px;accent-color:var(--green);flex-shrink:0;margin-top:2px}.check label{flex:1}.check small{display:block;color:var(--muted);font-size:12px;margin-top:2px}.progress{height:8px;background:#e7eee9;border-radius:99px;overflow:hidden}.progress div{height:100%;background:var(--green);width:0;transition:width .2s}.water-buttons{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.water-buttons button{padding:13px 5px}.inputline{display:flex;gap:8px;align-items:center}.inputline input,.inputline select,select,input[type=date],input[type=number]{border:1px solid var(--line);border-radius:10px;padding:9px;background:#fff;color:var(--ink);max-width:100%}.inputline input{width:100%}.video{display:inline-block;color:#1268a6;text-decoration:none;font-weight:650;font-size:13px;margin-top:6px}.video:after{content:" ↗"}.days{display:flex;gap:6px;overflow:auto;padding:3px 0 8px}.days button{min-width:43px;background:#e6eee9;color:var(--ink);padding:9px}.days button.active{background:var(--green);color:white}.note{background:#fff6e8;border:1px solid #f0d9b4;border-radius:12px;padding:11px;font-size:13px}.good{background:#edf7ed;border-color:#cfe5d1}.danger{color:var(--red)}footer{text-align:center;color:var(--muted);font-size:12px;padding:18px}
+@media(min-width:650px){main{padding-left:22px;padding-right:22px}.layout{display:grid;grid-template-columns:1.15fr .85fr;gap:10px}.layout .card{margin:0 0 10px}}
+</style>
+</head>
+<body>
+<header>
+ <div class="top"><div><h1>90-Day Fit & Care</h1><p>Body • Nutrition • Posture • Sleep • Hair</p></div><button id="installBtn" class="secondary small" hidden>Install App</button></div>
+ <div class="stats">
+  <div class="stat"><span>Current weight</span><b>86 kg</b></div>
+  <div class="stat"><span>Daily calories</span><b>~2,200</b></div>
+  <div class="stat"><span>Protein goal</span><b>150 g</b></div>
+ </div>
+ <p>Day <strong id="dayNum">1</strong> of 90 · <span id="dateLabel"></span></p>
+ <div class="progress" style="background:#ffffff35;margin-top:7px"><div id="overallProgress" style="background:#d9f1a5"></div></div>
+</header>
+<main>
+<nav>
+ <button class="tab active" data-tab="today">Today</button><button class="tab" data-tab="workout">Workout</button><button class="tab" data-tab="nutrition">Diet & Water</button><button class="tab" data-tab="posture">Posture</button><button class="tab" data-tab="sleep">Sleep</button><button class="tab" data-tab="hair">Hair Care</button><button class="tab" data-tab="progress">Progress</button><button class="tab" data-tab="settings">Reminders</button>
+</nav>
+
+<section class="panel active" id="today">
+ <div class="card">
+  <div class="row"><h2>आजची checklist</h2><span class="pill" id="todayCount">0 done</span></div>
+  <p class="muted">Checkbox tick केल्यावर नोंद या फोनच्या browser मध्ये save होते.</p>
+  <div id="todayChecks"></div>
+  <div class="progress"><div id="todayProgress"></div></div>
+ </div>
+ <div class="layout">
+  <div class="card"><h2>आजचा focus</h2><div id="todayFocus"></div></div>
+  <div class="card"><h2>Quick actions</h2><div class="row wrap"><button id="waterQuick">+250 ml water</button><button class="secondary" id="notifyQuick">Test notification</button></div><p class="muted">Notifications साठी permission द्यावी लागते. Browser बंद असताना वेळेवर reminders येतीलच याची हमी नाही; Android/browser support वर अवलंबून आहे.</p></div>
+ </div>
+</section>
+
+<section class="panel" id="workout">
+ <div class="card"><h2>Mon–Sun workout planner</h2><p class="muted">घरचा पर्याय: dumbbells/resistance band नसल्यास bodyweight variation निवड. Pain किंवा चक्कर आल्यास थांब.</p>
+ <div class="days" id="dayButtons"></div><div id="workoutContent"></div></div>
+ <div class="card"><h2>Workout rules</h2><ul><li>पहिले 2 आठवडे हलकं; form शिक.</li><li>Set संपताना 2–3 reps शिल्लक ठेव.</li><li>झोप 5 तासांपेक्षा कमी असल्यास heavy workout हलका कर किंवा recovery निवड.</li><li>Rest between sets: साधारण 60–120 सेकंद.</li></ul></div>
+</section>
+
+<section class="panel" id="nutrition">
+ <div class="card"><h2>Daily nutrition targets</h2><div class="row"><span>Calories</span><b>~2,200 kcal</b></div><div class="row"><span>Protein</span><b>150 g</b></div><div class="row"><span>Water target</span><b>3,000 ml</b></div><p class="muted">हे starting targets आहेत; वजनाचा 2–3 आठवड्यांचा trend आणि activity पाहून adjust कर. Kidney/heart condition किंवा fluid restriction असल्यास clinician चा सल्ला घे.</p></div>
+ <div class="card"><div class="row"><h2>Water tracker</h2><b id="waterTotal">0 / 3000 ml</b></div><div class="progress"><div id="waterProgress"></div></div><div class="water-buttons" style="margin-top:12px"><button data-water="150">+150 ml</button><button data-water="250">+250 ml</button><button data-water="500">+500 ml</button><button class="secondary" id="waterUndo">Undo</button></div><p class="muted">चहा/कॉफीपेक्षा पाणी स्वतंत्रपणे track कर. गरम हवामान/व्यायामात गरज वाढू शकते.</p></div>
+ <div class="card"><h2>Sample Indian meal plan</h2>
+ <div class="check"><input type="checkbox" data-check="breakfast"><label>Meal 1 — 3 अंडी, 2 मध्यम पोळ्या, 150 g दही, 1 केळं <small>अंदाजे 500–600 kcal; portion/तेलानुसार बदल</small></label></div>
+ <div class="check"><input type="checkbox" data-check="lunch"><label>Meal 2 — 150 g cooked chicken/fish, 150 g cooked rice, 100 g dal, भाजी/salad <small>अंदाजे 600–700 kcal</small></label></div>
+ <div class="check"><input type="checkbox" data-check="snack"><label>Meal 3 — 200 g दही, 1 फळ, 20 g भाजलेले चणे <small>दह्याच्या प्रकारानुसार protein बदलतो</small></label></div>
+ <div class="check"><input type="checkbox" data-check="dinner"><label>Meal 4 — 150 g cooked fish/chicken, 2 पोळ्या, भाजी <small>अंदाजे 500–650 kcal</small></label></div>
+ <div class="note">हे उदाहरण आहे, अचूक nutrition label नाही. तेल, पोळीचा आकार, raw vs cooked वजन यामुळे total बदलतो. भूकेनुसार व आहाराच्या गरजेनुसार portions बदल.</div>
+ </div>
+ <div class="card"><h2>Daily food notes</h2><textarea id="foodNotes" rows="3" style="width:100%;border:1px solid var(--line);border-radius:10px;padding:10px" placeholder="आज काय खाल्लं / calories / protein..."></textarea><p class="muted">Notes आपोआप save होतील.</p></div>
+</section>
+
+<section class="panel" id="posture">
+ <div class="card"><h2>Desk-job posture routine · 8–10 min</h2><p class="muted">सौम्य हालचाली करा; जबरदस्तीने मान/पाठ सरळ ढकलू नका.</p>
+ <div class="check"><input type="checkbox" data-check="chin"><label>Chin tucks — 2 × 8–10 <small>हनुवटी सरळ मागे; मान खाली नको.</small><a class="video" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query=physiotherapy+chin+tuck+exercise">Tutorial video</a></label></div>
+ <div class="check"><input type="checkbox" data-check="thoracic"><label>Seated thoracic extension — 8 reps <small>खुर्चीच्या आधाराने upper back हलके extend कर.</small><a class="video" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query=seated+thoracic+extension+physiotherapy">Tutorial video</a></label></div>
+ <div class="check"><input type="checkbox" data-check="scapula"><label>Shoulder-blade squeeze — 2 × 10 <small>खांदे कानांपासून दूर, blades हलके मागे.</small><a class="video" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query=scapular+retraction+exercise+physiotherapy">Tutorial video</a></label></div>
+ <div class="check"><input type="checkbox" data-check="cheststretch"><label>Doorway chest stretch — 2 × 20–30 sec <small>वेदना न होता हलका stretch.</small><a class="video" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query=doorway+chest+stretch+physiotherapy">Tutorial video</a></label></div>
+ </div>
+ <div class="card"><h2>Desk break checklist</h2>
+ <div class="check"><input type="checkbox" data-check="desksetup"><label>Monitor eye-level जवळ, keyboard/mouse जवळ, feet supported</label></div>
+ <div class="check"><input type="checkbox" data-check="break1"><label>कामात break 1 — 2–3 मिनिटं उभं राहिलो/चाललो</label></div>
+ <div class="check"><input type="checkbox" data-check="break2"><label>कामात break 2 — 2–3 मिनिटं उभं राहिलो/चाललो</label></div>
+ <div class="check"><input type="checkbox" data-check="break3"><label>कामात break 3 — 2–3 मिनिटं उभं राहिलो/चाललो</label></div>
+ <div class="note">फोनमध्ये प्रत्येक 30–45 मिनिटांनी alarm सेट करणे उपयोगी ठरेल. ठळक/कठीण hump, वाढणारा वक्रपणा, वेदना, मुंग्या किंवा कमजोरी असल्यास doctor/physiotherapist कडून तपासणी कर.</div>
+ </div>
+</section>
+
+<section class="panel" id="sleep">
+ <div class="card"><h2>Sleep tracker</h2><p class="muted">Rotational shift असल्याने वेळेपेक्षा एकूण झोप आणि consistency track कर.</p>
+ <label for="sleepHours">एकूण झोप (24 तासांत)</label><div class="inputline" style="margin:8px 0 12px"><input id="sleepHours" type="number" min="0" max="16" step="0.25" placeholder="उदा. 6.5"><span>hours</span><button id="saveSleep">Save</button></div>
+ <div class="row"><span>Target</span><b>7–9 hours</b></div><p id="sleepMessage" class="muted">आजची झोप नोंदव.</p>
+ <div class="check"><input type="checkbox" data-check="sleepwinddown"><label>झोपण्यापूर्वी 30 मिनिटे wind-down</label></div><div class="check"><input type="checkbox" data-check="darkroom"><label>झोपेची खोली अंधारी/शांत ठेवली</label></div>
+ </div>
+</section>
+
+<section class="panel" id="hair">
+ <div class="card"><h2>Hair-care tracker</h2><p class="muted">तुझ्या आधीच्या माहितीनुसार hairline/crown thinning बद्दल चिंता आहे. Gentle care track कर; hair regrowth ची हमी नाही.</p>
+ <div class="check"><input type="checkbox" data-check="hairgentle"><label>Gentle hair care — जोरात घासणे/ओले केस खेचणे टाळले</label></div>
+ <div class="check"><input type="checkbox" data-check="hairwash"><label>आज wash day असल्यास gentle shampoo वापरला <small>दररोज shampoo आवश्यक नाही; scalp/oiliness नुसार.</small></label></div>
+ <div class="check"><input type="checkbox" data-check="hairmed"><label>फक्त डॉक्टरांनी सांगितलेली prescribed hair treatment वापरली <small>औषध स्वतःहून सुरू/बंद करू नकोस; prescribed instructions पाळ.</small></label></div>
+ <div class="check"><input type="checkbox" data-check="hairprotein"><label>आज protein-rich meals पूर्ण केले</label></div>
+ <div class="check"><input type="checkbox" data-check="hairphoto"><label>आज फोटो/assessment day असल्यास hairline/crown photo घेतला <small>दररोज नाही; महिन्यातून एकदा समान प्रकाशात तुलना अधिक उपयोगी.</small></label></div>
+ <div class="note">Hairline/crown thinning कायम असल्यास dermatologist कडून कारण आणि उपचार तपासून घे. Minoxidil/finasteride सारखी औषधे वापरत असशील तर तुझ्या डॉक्टरांच्या सूचनांनुसारच वापर; app हे वैद्यकीय सल्ल्याचा पर्याय नाही.</div>
+ </div>
+</section>
+
+<section class="panel" id="progress">
+ <div class="card"><h2>Weekly progress</h2><div class="inputline"><label for="weightInput">Weight (kg)</label><input id="weightInput" type="number" min="30" max="250" step="0.1" placeholder="86"><button id="saveWeight">Save</button></div>
+ <div class="inputline" style="margin-top:10px"><label for="waistInput">Waist (cm)</label><input id="waistInput" type="number" min="40" max="200" step="0.5" placeholder="measure"><button id="saveWaist">Save</button></div>
+ <p class="muted" id="lastMeasure">पहिली नोंद भर.</p></div>
+ <div class="card"><h2>Last 7 days summary</h2><div id="history"></div><button class="secondary" id="exportData">Export my data (JSON)</button><button class="secondary" id="clearData" style="margin-left:6px">Reset all data</button></div>
+</section>
+
+<section class="panel" id="settings">
+ <div class="card"><h2>Reminders & notifications</h2><p class="muted">Notifications सक्षम करण्यासाठी app HTTPS वर host/install केलेली असावी आणि browser permission द्यावी लागते.</p>
+ <button id="enableNotifications">Enable notifications</button><p id="notifStatus" class="muted">Notifications अजून enable केलेली नाहीत.</p>
+ <h3>Reminder times</h3>
+ <div class="inputline"><label for="waterTime">Water reminder</label><input type="time" id="waterTime" value="10:30"></div>
+ <div class="inputline" style="margin-top:8px"><label for="postureTime">Posture reminder</label><input type="time" id="postureTime" value="14:00"></div>
+ <div class="inputline" style="margin-top:8px"><label for="sleepTime">Sleep wind-down</label><input type="time" id="sleepTime" value="22:30"></div>
+ <p class="muted">हे वेळा निवडून Save reminders दाब. Browser/app उघडी असताना reminders अधिक विश्वसनीय असतात; browser बंद असताना recurring notifications साठी platform support आवश्यक आहे.</p>
+ <button id="saveReminders">Save reminders</button>
+ </div>
+ <div class="card"><h2>Install on Android</h2><ol><li>ही app HTTPS hosting वर उघड.</li><li>Chrome menu (⋮) → <b>Install app</b> किंवा <b>Add to Home screen</b>.</li><li>Home screen icon वरून उघड.</li><li>Reminders tab मध्ये notifications enable कर.</li></ol><p class="muted">ZIP मध्ये source files आहेत; ZIP थेट install होत नाही. GitHub Pages किंवा दुसऱ्या HTTPS static host वर upload केल्यावर PWA install करता येईल.</p></div>
+</section>
+<footer>Personal tracker · Data stays in this browser unless you export it. This is not medical advice.</footer>
+</main>
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const STORE='fitcare90_v1';
+let data=JSON.parse(localStorage.getItem(STORE)||'{}');
+const todayKey=()=>new Date().toISOString().slice(0,10);
+const dayNames=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const dayShort=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+function save(){localStorage.setItem(STORE,JSON.stringify(data));renderAll()}
+function dayData(){data.days=data.days||{};data.days[todayKey()]=data.days[todayKey()]||{checks:{},water:0};return data.days[todayKey()]}
+function setCheck(key,val){let d=dayData();d.checks[key]=val;save()}
+function checked(key){return !!(dayData().checks||{})[key]}
+function dayIndex(){return new Date().getDay()}
+const workouts=[
+ {name:'Sunday · Recovery',focus:'Recovery + walk',items:[['Easy walk','20–30 min'],['Posture routine','8–10 min'],['Optional gentle mobility','5 min']],video:'https://www.youtube.com/results?search_query=beginner+full+body+mobility+routine'},
+ {name:'Monday · Upper A',focus:'Chest + back + shoulders',items:[['Incline push-ups / push-ups','3 × 8–12'],['Backpack or band row','3 × 10–12'],['Pike push-up / light shoulder press','2 × 8–10'],['Band pull-aparts / reverse fly','2 × 12–15'],['Biceps curl (if weights)','2 × 10–12'],['Plank','3 × 20–40 sec']],video:'https://www.youtube.com/results?search_query=beginner+home+upper+body+workout+proper+form'},
+ {name:'Tuesday · Lower A',focus:'Legs + core',items:[['Bodyweight squat','3 × 10–15'],['Reverse lunge','2 × 8 each side'],['Glute bridge','3 × 12'],['Calf raises','2 × 15'],['Dead bug','2 × 8 each side']],video:'https://www.youtube.com/results?search_query=beginner+home+leg+workout+proper+form'},
+ {name:'Wednesday · Active recovery',focus:'Walk + mobility',items:[['Brisk walk','25–35 min'],['Posture routine','8–10 min'],['Gentle thoracic mobility','2–3 min']],video:'https://www.youtube.com/results?search_query=beginner+walking+mobility+routine'},
+ {name:'Thursday · Upper B',focus:'Back + chest + arms',items:[['Push-ups / incline push-ups','3 × 8–12'],['One-arm backpack row','3 × 10 each side'],['Floor press (dumbbells if available)','2 × 10–12'],['Prone Y-T raises','2 × 8 each'],['Biceps curl (if weights)','2 × 10–12'],['Side plank','2 × 20 sec each side']],video:'https://www.youtube.com/results?search_query=home+back+chest+workout+proper+form+beginner'},
+ {name:'Friday · Lower B',focus:'Legs + core',items:[['Split squat (hold support)','3 × 8 each side'],['Hip hinge / light backpack RDL','3 × 10'],['Glute bridge','3 × 12'],['Bird dog','2 × 8 each side'],['Calf raises','2 × 15']],video:'https://www.youtube.com/results?search_query=beginner+home+lower+body+workout+proper+form'},
+ {name:'Saturday · Full body',focus:'Full body + easy cardio',items:[['Squat to chair','2 × 12'],['Incline push-up','2 × 10'],['Backpack row','2 × 12'],['Glute bridge','2 × 12'],['Brisk walk','15–25 min']],video:'https://www.youtube.com/results?search_query=beginner+full+body+home+workout+no+equipment'}
+];
+function workoutKey(i,j){return 'work_'+i+'_'+j}
+function renderWorkout(){
+ const idx=window.selectedWorkout==null?dayIndex():window.selectedWorkout;
+ $('#dayButtons').innerHTML=dayShort.map((d,i)=>`<button class="${i===idx?'active':''}" data-wday="${i}">${d}</button>`).join('');
+ $$('[data-wday]').forEach(b=>b.onclick=()=>{window.selectedWorkout=+b.dataset.wday;renderWorkout()});
+ const w=workouts[idx];
+ $('#workoutContent').innerHTML=`<div class="row wrap"><div><h3>${w.name}</h3><span class="muted">${w.focus}</span></div><span class="pill">${idx===0||idx===3?'Recovery':'Home workout'}</span></div>`+
+ w.items.map((it,j)=>`<div class="check"><input type="checkbox" data-work="${workoutKey(idx,j)}" ${checked(workoutKey(idx,j))?'checked':''}><label>${it[0]}<small>${it[1]}</small></label></div>`).join('')+
+ `<a class="video" target="_blank" rel="noopener" href="${w.video}">Open tutorial videos for today</a><p class="muted">हे YouTube search links आहेत; video उघडल्यावर योग्य beginner tutorial निवड.</p>`;
+ $$('[data-work]').forEach(el=>el.onchange=()=>setCheck(el.dataset.work,el.checked));
+}
+const labels={breakfast:'Breakfast',lunch:'Lunch',snack:'Snack',dinner:'Dinner',chin:'Chin tucks',thoracic:'Thoracic extension',scapula:'Shoulder blade squeeze',cheststretch:'Chest stretch',desksetup:'Desk setup',break1:'Desk break 1',break2:'Desk break 2',break3:'Desk break 3',sleepwinddown:'Sleep wind-down',darkroom:'Dark room',hairgentle:'Gentle hair care',hairwash:'Hair wash (if due)',hairmed:'Prescribed treatment (if applicable)',hairprotein:'Protein-rich meals',hairphoto:'Hair photo (if due)'};
+function todayList(){
+ const daily=['breakfast','lunch','snack','dinner','chin','thoracic','scapula','cheststretch','desksetup','break1','break2','break3','sleepwinddown','darkroom','hairgentle','hairprotein'];
+ $('#todayChecks').innerHTML=daily.map(k=>`<div class="check"><input type="checkbox" data-today="${k}" ${checked(k)?'checked':''}><label>${labels[k]||k}</label></div>`).join('');
+ $$('[data-today]').forEach(el=>el.onchange=()=>setCheck(el.dataset.today,el.checked));
+}
+function renderWater(){const d=dayData();$('#waterTotal').textContent=`${d.water||0} / 3000 ml`;$('#waterProgress').style.width=Math.min(100,(d.water||0)/3000*100)+'%'}
+function renderSleep(){const n=data.sleep?.[todayKey()];$('#sleepHours').value=n??'';$('#sleepMessage').textContent=n==null?'आजची झोप नोंदव.':n>=7?'छान — sleep target पूर्ण झाला.':`नोंद: ${n} तास. शक्य असल्यास एकूण झोप हळूहळू 7–9 तासांच्या दिशेने वाढव.`}
+function renderProgress(){let h=data.measurements||[];$('#lastMeasure').textContent=h.length?`Latest: ${h[h.length-1].weight||'—'} kg · waist ${h[h.length-1].waist||'—'} cm · ${h[h.length-1].date}`:'पहिली नोंद भर.';$('#history').innerHTML=h.slice(-7).reverse().map(x=>`<div class="row" style="padding:8px 0;border-bottom:1px solid var(--line)"><span>${x.date}</span><span>${x.weight||'—'} kg · ${x.waist||'—'} cm</span></div>`).join('')||'<p class="muted">अजून नोंदी नाहीत.</p>'}
+function renderAll(){
+ todayList();renderWorkout();renderWater();renderSleep();renderProgress();
+ const d=dayData(),checks=Object.values(d.checks||{}).filter(Boolean).length,total=Object.keys(d.checks||{}).length;
+ $('#todayCount').textContent=`${checks} done`;$('#todayProgress').style.width=(total?checks/total*100:0)+'%';
+ const done=Object.values(d.checks||{}).filter(Boolean).length+(d.water>=3000?1:0)+(data.sleep?.[todayKey()]>=7?1:0);
+ $('#overallProgress').style.width=Math.min(100,done/24*100)+'%';
+}
+$$('.tab').forEach(b=>b.onclick=()=>{ $$('.tab').forEach(x=>x.classList.toggle('active',x===b)); $$('.panel').forEach(x=>x.classList.toggle('active',x.id===b.dataset.tab));});
+$$('[data-water]').forEach(b=>b.onclick=()=>{const d=dayData();d.water=(d.water||0)+Number(b.dataset.water);save()});
+$('#waterQuick').onclick=()=>{const d=dayData();d.water=(d.water||0)+250;save()};
+$('#waterUndo').onclick=()=>{const d=dayData();d.water=Math.max(0,(d.water||0)-250);save()};
+$('#saveSleep').onclick=()=>{const n=Number($('#sleepHours').value);if(n>=0&&n<=16){data.sleep=data.sleep||{};data.sleep[todayKey()]=n;save()}};
+$('#foodNotes').value=(data.notes||{})[todayKey()]||'';
+$('#foodNotes').oninput=()=>{data.notes=data.notes||{};data.notes[todayKey()]=$('#foodNotes').value;localStorage.setItem(STORE,JSON.stringify(data))};
+$$('[data-check]').forEach(el=>{el.checked=checked(el.dataset.check);el.onchange=()=>setCheck(el.dataset.check,el.checked)});
+$('#saveWeight').onclick=()=>{const w=Number($('#weightInput').value);if(w<30||w>250)return;const existing=(data.measurements||[]).find(x=>x.date===todayKey())||{date:todayKey()};existing.weight=w;data.measurements=data.measurements||[];const i=data.measurements.findIndex(x=>x.date===todayKey());if(i>=0)data.measurements[i]=existing;else data.measurements.push(existing);save()};
+$('#saveWaist').onclick=()=>{const w=Number($('#waistInput').value);if(w<40||w>200)return;data.measurements=data.measurements||[];let x=data.measurements.find(x=>x.date===todayKey());if(!x){x={date:todayKey()};data.measurements.push(x)}x.waist=w;save()};
+$('#exportData').onclick=()=>{const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='fit-care-tracker-data.json';a.click();URL.revokeObjectURL(a.href)};
+$('#clearData').onclick=()=>{if(confirm('सगळा tracker data delete करायचा? Export आधी करून ठेव.')){localStorage.removeItem(STORE);data={};location.reload()}};
+$('#dateLabel').textContent=new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+const startKey='fitcare_start';if(!localStorage.getItem(startKey))localStorage.setItem(startKey,todayKey());
+const start=new Date(localStorage.getItem(startKey)+'T00:00:00');const elapsed=Math.floor((new Date(todayKey()+'T00:00:00')-start)/86400000)+1;$('#dayNum').textContent=Math.max(1,Math.min(90,elapsed));
+const focus=['Workout technique + tracking','Diet portions + protein','Posture breaks + sleep'];$('#todayFocus').innerHTML=`<p><b>${focus[elapsed%3]}</b></p><p class="muted">आज perfect होण्यापेक्षा checklist मध्ये सातत्य महत्त्वाचं.</p>`;
+function notification(msg){if('Notification'in window&&Notification.permission==='granted'){try{new Notification('90-Day Fit & Care',{body:msg,icon:'icon.svg'})}catch(e){}}}
+$('#enableNotifications').onclick=async()=>{if(!('Notification'in window)){$('#notifStatus').textContent='या browser मध्ये notifications supported नाहीत.';return}try{let p=await Notification.requestPermission();$('#notifStatus').textContent=p==='granted'?'Notifications permission granted. Reminder times save कर.':`Permission status: ${p}`}catch(e){$('#notifStatus').textContent='Notification permission उपलब्ध नाही.'}};
+$('#notifyQuick').onclick=()=>{if(window.AndroidFitCare&&AndroidFitCare.testNotification)AndroidFitCare.testNotification();else notification('हे test notification आहे. App notifications सक्षम आहेत.');};
+$('#saveReminders').onclick=()=>{data.reminders={water:$('#waterTime').value,posture:$('#postureTime').value,sleep:$('#sleepTime').value};localStorage.setItem(STORE,JSON.stringify(data));if(window.AndroidFitCare&&AndroidFitCare.saveReminders){AndroidFitCare.saveReminders(data.reminders.water,data.reminders.posture,data.reminders.sleep);alert('Native Android reminders schedule केले. Android notification permission आणि battery settings तपास.')}else{alert('Reminder times save झाल्या. Browser बंद असताना recurring notifications साठी platform support आवश्यक असू शकते.')}};
+if('serviceWorker'in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
+let deferredPrompt;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('#installBtn').hidden=false});$('#installBtn').onclick=async()=>{if(deferredPrompt){deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$('#installBtn').hidden=true}else alert('Chrome menu → Install app / Add to Home screen वापर.')};
+renderAll();
+</script>
+</body>
+</html>
